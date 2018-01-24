@@ -24,21 +24,19 @@ import retrofit2.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class RecipeStepFragment extends Fragment {
 
     private ArrayList<RecipeModel> recipeModels;
     private RecipeAdapter recipeAdapter;
     private RecyclerView rvRecipe;
-    private ProgressBar progressBar;
-    private TextView tvError;
 
-    public MainActivityFragment() {
+    public RecipeStepFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
         recipeModels = new ArrayList<>();
         recipeAdapter = new RecipeAdapter(getActivity(), recipeModels);
@@ -46,34 +44,13 @@ public class MainActivityFragment extends Fragment {
         rvRecipe.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvRecipe.setAdapter(recipeAdapter);
 
-        progressBar = (ProgressBar) rootView.findViewById(R.id.pb_loader);
-        tvError = (TextView) rootView.findViewById(R.id.tv_error);
-
         loadData();
 
         return rootView;
     }
 
     private void loadData() {
-        ApiUtils.getApiInterface().getRecipeList().enqueue(new Callback<ArrayList<RecipeModel>>() {
-            @Override
-            public void onResponse(Call<ArrayList<RecipeModel>> call, Response<ArrayList<RecipeModel>> response) {
-                if (response != null && response.isSuccessful()) {
-                    recipeModels.addAll(response.body());
-                    recipeAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
-                    tvError.setVisibility(View.GONE);
-                } else {
-                    tvError.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<RecipeModel>> call, Throwable t) {
-                t.printStackTrace();
-                tvError.setVisibility(View.GONE);
-            }
-        });
+        
 
     }
 }
