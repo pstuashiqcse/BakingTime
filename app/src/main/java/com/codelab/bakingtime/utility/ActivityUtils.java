@@ -3,6 +3,7 @@ package com.codelab.bakingtime.utility;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.codelab.bakingtime.activity.RecipeDetailsActivity;
 import com.codelab.bakingtime.activity.RecipeStepActivity;
 import com.codelab.bakingtime.api.models.IngredientsModel;
 import com.codelab.bakingtime.api.models.StepsModel;
@@ -26,6 +27,13 @@ public class ActivityUtils {
         Intent intent = new Intent(activity, RecipeStepActivity.class);
         intent.putParcelableArrayListExtra(Constants.KEY_INGREDIENTS, ingredientsModels);
         intent.putParcelableArrayListExtra(Constants.KEY_STEPS, stepsModels);
+        activity.startActivity(intent);
+    }
+
+    public void invokeStepDetailsPage(Activity activity, ArrayList<StepsModel> stepsModels, int index) {
+        Intent intent = new Intent(activity, RecipeDetailsActivity.class);
+        intent.putParcelableArrayListExtra(Constants.KEY_STEPS, stepsModels);
+        intent.putExtra("index", index);
         activity.startActivity(intent);
     }
 

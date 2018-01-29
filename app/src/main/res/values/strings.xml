@@ -7,4 +7,7 @@
     <string name="no_internet">No internet available</string>
     <string name="connect">Connect</string>
 
+    <string name="recipe_ingredients">Recipe Ingredients</string>
+    <string name="bullet">\u2022</string>
+
 </resources>

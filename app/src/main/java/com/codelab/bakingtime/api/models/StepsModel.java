@@ -74,4 +74,8 @@ public class StepsModel implements Parcelable {
         return thumbnailURL;
     }
 
+    public StepsModel(String description, String shortDescription) {
+        this.description = description;
+        this.shortDescription = shortDescription;
+    }
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     tools:context=".activity.MainActivity">
 
     <LinearLayout
@@ -15,13 +16,14 @@
             android:id="@+id/layout_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.3" />
+            android:layout_weight="0.35" />
 
-        <FrameLayout
+        <include
             android:id="@+id/details_pane"
+            layout="@layout/fragment_details_pager"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.7" />
+            android:layout_weight="0.65" />
 
     </LinearLayout>
 
