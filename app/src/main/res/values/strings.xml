@@ -9,5 +9,7 @@
 
     <string name="recipe_ingredients">Recipe Ingredients</string>
     <string name="bullet">\u2022</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
