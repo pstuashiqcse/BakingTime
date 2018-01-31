@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         setContentView(R.layout.activity_main);
         recipeModels = new ArrayList<>();
-        recipeAdapter = new RecipeAdapter(recipeModels);
+        recipeAdapter = new RecipeAdapter(MainActivity.this, recipeModels);
         RecyclerView rvRecipe = (RecyclerView) findViewById(R.id.rv_recipe);
         gridLayoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.home_column));
         rvRecipe.setLayoutManager(gridLayoutManager);
