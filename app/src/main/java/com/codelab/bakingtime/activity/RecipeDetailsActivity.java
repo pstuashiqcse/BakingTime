@@ -1,13 +1,11 @@
 package com.codelab.bakingtime.activity;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.adapter.DetailsPagerAdapter;
-import com.codelab.bakingtime.api.models.RecipeModel;
 import com.codelab.bakingtime.api.models.StepsModel;
 import com.codelab.bakingtime.data.constant.Constants;
 
@@ -18,7 +16,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ArrayList<StepsModel> stepsModels;
     private int index;
-    private DetailsPagerAdapter detailsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private void initFunctionality() {
-        detailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager(), stepsModels);
+        DetailsPagerAdapter detailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager(), stepsModels);
         mViewPager.setAdapter(detailsPagerAdapter);
         mViewPager.setCurrentItem(index);
     }

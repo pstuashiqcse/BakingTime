@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<RecipeModel> recipeModels;
     private RecipeAdapter recipeAdapter;
-    private RecyclerView rvRecipe;
     private ProgressBar progressBar;
     private TextView tvError;
     private GridLayoutManager gridLayoutManager;
@@ -47,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         setContentView(R.layout.activity_main);
         recipeModels = new ArrayList<>();
-        recipeAdapter = new RecipeAdapter(this, recipeModels);
-        rvRecipe = (RecyclerView) findViewById(R.id.rv_recipe);
+        recipeAdapter = new RecipeAdapter(recipeModels);
+        RecyclerView rvRecipe = (RecyclerView) findViewById(R.id.rv_recipe);
         gridLayoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.home_column));
         rvRecipe.setLayoutManager(gridLayoutManager);
         rvRecipe.setAdapter(recipeAdapter);

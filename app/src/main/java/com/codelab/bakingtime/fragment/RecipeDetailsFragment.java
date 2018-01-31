@@ -1,24 +1,17 @@
 package com.codelab.bakingtime.fragment;
 
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.codelab.bakingtime.R;
-import com.codelab.bakingtime.adapter.StepAdapter;
-import com.codelab.bakingtime.api.models.IngredientsModel;
 import com.codelab.bakingtime.api.models.StepsModel;
 import com.codelab.bakingtime.data.constant.Constants;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -28,7 +21,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
@@ -117,8 +109,6 @@ public class RecipeDetailsFragment extends Fragment {
         } else {
             thumbView.setVisibility(View.GONE);
         }
-
-        /* TODO: content provider to store recipe data, homescreen widget - ingredient list */
     }
 
     private void releasePlayer() {

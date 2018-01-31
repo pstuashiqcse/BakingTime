@@ -1,8 +1,5 @@
 package com.codelab.bakingtime.api.params;
 
-/**
- * Created by ashiq on 1/20/2018.
- */
 
 public class HttpParams {
 

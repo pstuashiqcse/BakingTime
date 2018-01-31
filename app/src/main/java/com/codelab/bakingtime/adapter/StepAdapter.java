@@ -1,6 +1,5 @@
 package com.codelab.bakingtime.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +8,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codelab.bakingtime.R;
-import com.codelab.bakingtime.api.models.RecipeModel;
 import com.codelab.bakingtime.api.models.StepsModel;
 
 import java.util.ArrayList;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
-    private final Context mContext;
     private final ArrayList<StepsModel> arrayList;
     private ItemClickListener itemClickListener;
 
-    public StepAdapter(Context context, ArrayList<StepsModel> arrayList) {
-        this.mContext = context;
+    public StepAdapter(ArrayList<StepsModel> arrayList) {
         this.arrayList = arrayList;
     }
 

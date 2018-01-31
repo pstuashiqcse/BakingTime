@@ -1,8 +1,6 @@
 package com.codelab.bakingtime.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.adapter.DetailsPagerAdapter;
 import com.codelab.bakingtime.adapter.StepAdapter;
 import com.codelab.bakingtime.api.models.IngredientsModel;
-import com.codelab.bakingtime.api.models.RecipeModel;
 import com.codelab.bakingtime.api.models.StepsModel;
 import com.codelab.bakingtime.data.constant.Constants;
 import com.codelab.bakingtime.utility.ActivityUtils;
@@ -27,9 +24,7 @@ public class RecipeStepFragment extends Fragment {
 
     private ArrayList<StepsModel> arrayList;
     private StepAdapter stepAdapter;
-    private RecyclerView rvSteps;
     private ViewPager viewPager;
-    private LinearLayoutManager layoutManager;
     private boolean twoPan;
 
     private String placeholder;
@@ -45,9 +40,9 @@ public class RecipeStepFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
 
         arrayList = new ArrayList<>();
-        stepAdapter = new StepAdapter(getActivity(), arrayList);
-        rvSteps = (RecyclerView) rootView.findViewById(R.id.rv_steps);
-        layoutManager = new LinearLayoutManager(getActivity());
+        stepAdapter = new StepAdapter(arrayList);
+        RecyclerView rvSteps = (RecyclerView) rootView.findViewById(R.id.rv_steps);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvSteps.setLayoutManager(layoutManager);
         rvSteps.setAdapter(stepAdapter);
 
@@ -95,7 +90,9 @@ public class RecipeStepFragment extends Fragment {
                 description.append("      " + bullet + "  " + ingredientsModel.getQuantity() + ", " + ingredientsModel.getMeasure() + ", " + ingredientsModel.getIngredient() + "\n");
             }
             StepsModel stepsModel = new StepsModel(placeholder, description.toString());
-            stepsModel.setSelected(true);
+            if(twoPan) {
+                stepsModel.setSelected(true);
+            }
             finalList.add(stepsModel);
         }
 

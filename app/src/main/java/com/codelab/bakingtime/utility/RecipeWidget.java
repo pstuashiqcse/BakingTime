@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
-import android.widget.Spinner;
 
 import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.activity.MainActivity;
