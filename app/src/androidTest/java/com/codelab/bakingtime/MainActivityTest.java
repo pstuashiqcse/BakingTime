@@ -1,19 +1,13 @@
 package com.codelab.bakingtime;
 
 
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.action.ViewActions;
-import android.support.test.espresso.assertion.ViewAssertions;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.codelab.bakingtime.activity.MainActivity;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +23,27 @@ public class MainActivityTest {
     @Test
     public void checkApiData() {
 
-        Espresso.onData(CoreMatchers.anything()).inAdapterView(ViewMatchers.withId(R.id.rv_recipe)).atPosition(0).perform(ViewActions.click());
+        int count  = getRVcount();
+        if(count > 0) {
+            Log.e("Test Output", "No data, loading data from network....");
+        }
 
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int count1  = getRVcount();
+        if(count1 > 0) {
+            Log.e("Test Output", count1+" data loaded");
+        }
+
+    }
+
+    private int getRVcount(){
+        RecyclerView recyclerView = (RecyclerView) mActivityTestRule.getActivity().findViewById(R.id.rv_recipe);
+        return recyclerView.getAdapter().getItemCount();
     }
 
 }

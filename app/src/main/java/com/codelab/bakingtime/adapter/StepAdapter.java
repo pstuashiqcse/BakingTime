@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codelab.bakingtime.R;
@@ -27,11 +28,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView tvTitle;
+        private final LinearLayout info;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            info = (LinearLayout) itemView.findViewById(R.id.info);
 
             itemView.setOnClickListener(this);
 
@@ -58,7 +61,13 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.tvTitle.setText(arrayList.get(position).getDescription());
+        holder.tvTitle.setText(arrayList.get(position).getShortDescription());
+
+        if(arrayList.get(position).isSelected()) {
+            holder.info.setBackgroundResource(R.drawable.bg_item);
+        } else {
+            holder.info.setBackgroundResource(0);
+        }
     }
 
     @Override

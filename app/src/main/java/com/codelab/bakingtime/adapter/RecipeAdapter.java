@@ -59,10 +59,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        /*Glide.with(mContext)
-                .load(arrayList.get(position).getImage())
-                .into(holder.ivCover);*/
-
         holder.tvTitle.setText(arrayList.get(position).getName());
     }
 

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import android.widget.Spinner;
 
 import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.activity.MainActivity;
@@ -24,6 +25,8 @@ public class RecipeWidget extends AppWidgetProvider {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
         views.setOnClickPendingIntent(R.id.widget_button, pendingIntent);
+
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
 

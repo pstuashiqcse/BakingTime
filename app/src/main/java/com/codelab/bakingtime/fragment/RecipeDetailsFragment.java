@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.adapter.StepAdapter;
 import com.codelab.bakingtime.api.models.IngredientsModel;
@@ -35,9 +38,9 @@ import java.util.ArrayList;
 public class RecipeDetailsFragment extends Fragment {
 
     private TextView title, description;
-    //private VideoView videoView;
     private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer player;
+    private ImageView thumbView;
 
     private ArrayList<StepsModel> arrayList;
     private int index;
@@ -58,10 +61,12 @@ public class RecipeDetailsFragment extends Fragment {
         }
         title = rootView.findViewById(R.id.title);
         description = rootView.findViewById(R.id.description);
-        //videoView = rootView.findViewById(R.id.video_player);
         simpleExoPlayerView = rootView.findViewById(R.id.video_player);
+        thumbView = rootView.findViewById(R.id.thumb_view);
 
         loadData();
+
+        setRetainInstance(true);
 
         return rootView;
     }
@@ -71,6 +76,7 @@ public class RecipeDetailsFragment extends Fragment {
         String titleText = arrayList.get(index).getShortDescription();
         String descriptionText = arrayList.get(index).getDescription();
         String videoUrl = arrayList.get(index).getVideoURL();
+        String thumbUrl = arrayList.get(index).getThumbnailURL();
 
         if (titleText != null && !titleText.isEmpty()) {
             title.setText(titleText);
@@ -84,24 +90,6 @@ public class RecipeDetailsFragment extends Fragment {
             description.setVisibility(View.GONE);
         }
 
-        /*if (videoUrl != null && !videoUrl.isEmpty()) {
-            MediaController mc = new MediaController(getActivity());
-            mc.setAnchorView(videoView);
-            mc.setMediaPlayer(videoView);
-            Uri video = Uri.parse(videoUrl);
-            videoView.setMediaController(mc);
-            videoView.setVideoURI(video);
-
-            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    videoView.start();
-                }
-            });
-        } else {
-            videoView.setVisibility(View.GONE);
-        }*/
-
         if (videoUrl != null && !videoUrl.isEmpty()) {
             player = ExoPlayerFactory.newSimpleInstance(
                     new DefaultRenderersFactory(getActivity()),
@@ -109,16 +97,28 @@ public class RecipeDetailsFragment extends Fragment {
 
             simpleExoPlayerView.setPlayer(player);
 
-            player.setPlayWhenReady(true);
+            player.setPlayWhenReady(false);
             Uri uri = Uri.parse(videoUrl);
             MediaSource mediaSource = new ExtractorMediaSource.Factory(
                     new DefaultHttpDataSourceFactory("baking-time")).
                     createMediaSource(uri);
             player.prepare(mediaSource, true, false);
+
+            Log.e("Visible", "play");
+
         } else {
             simpleExoPlayerView.setVisibility(View.GONE);
         }
-        /* TODO: buffer load, progress counter, espresso, content provider to store recipe data, homescreen widget - ingredient list */
+
+        if (thumbUrl != null && !thumbUrl.isEmpty()) {
+            Glide.with(getActivity())
+                    .load(thumbUrl)
+                    .into(thumbView);
+        } else {
+            thumbView.setVisibility(View.GONE);
+        }
+
+        /* TODO: content provider to store recipe data, homescreen widget - ingredient list */
     }
 
     private void releasePlayer() {
@@ -128,9 +128,12 @@ public class RecipeDetailsFragment extends Fragment {
         }
     }
 
+
     @Override
-    public void onPause() {
-        super.onPause();
-        releasePlayer();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isVisibleToUser) {
+            releasePlayer();
+        }
     }
 }

@@ -18,6 +18,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.35" />
 
+        <View
+            android:background="@color/bg_line"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"/>
+
         <include
             android:id="@+id/details_pane"
             layout="@layout/fragment_details_pager"

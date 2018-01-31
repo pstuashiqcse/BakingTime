@@ -19,6 +19,8 @@ public class StepsModel implements Parcelable {
     @SerializedName("thumbnailURL")
     private String thumbnailURL;
 
+    private boolean isSelected;
+
 
     @Override
     public int describeContents() {
@@ -74,8 +76,16 @@ public class StepsModel implements Parcelable {
         return thumbnailURL;
     }
 
-    public StepsModel(String description, String shortDescription) {
-        this.description = description;
+    public StepsModel(String shortDescription, String description) {
         this.shortDescription = shortDescription;
+        this.description = description;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

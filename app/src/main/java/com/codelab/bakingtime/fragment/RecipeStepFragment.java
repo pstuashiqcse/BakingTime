@@ -1,32 +1,26 @@
 package com.codelab.bakingtime.fragment;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.codelab.bakingtime.R;
 import com.codelab.bakingtime.adapter.DetailsPagerAdapter;
-import com.codelab.bakingtime.adapter.RecipeAdapter;
 import com.codelab.bakingtime.adapter.StepAdapter;
-import com.codelab.bakingtime.api.http.ApiUtils;
 import com.codelab.bakingtime.api.models.IngredientsModel;
 import com.codelab.bakingtime.api.models.RecipeModel;
 import com.codelab.bakingtime.api.models.StepsModel;
 import com.codelab.bakingtime.data.constant.Constants;
-import com.codelab.bakingtime.listeners.StepSelector;
+import com.codelab.bakingtime.utility.ActivityUtils;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class RecipeStepFragment extends Fragment {
@@ -34,8 +28,9 @@ public class RecipeStepFragment extends Fragment {
     private ArrayList<StepsModel> arrayList;
     private StepAdapter stepAdapter;
     private RecyclerView rvSteps;
-
-    private StepSelector stepSelector;
+    private ViewPager viewPager;
+    private LinearLayoutManager layoutManager;
+    private boolean twoPan;
 
     private String placeholder;
     private String bullet;
@@ -52,7 +47,8 @@ public class RecipeStepFragment extends Fragment {
         arrayList = new ArrayList<>();
         stepAdapter = new StepAdapter(getActivity(), arrayList);
         rvSteps = (RecyclerView) rootView.findViewById(R.id.rv_steps);
-        rvSteps.setLayoutManager(new LinearLayoutManager(getActivity()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        rvSteps.setLayoutManager(layoutManager);
         rvSteps.setAdapter(stepAdapter);
 
         placeholder = getActivity().getString(R.string.recipe_ingredients);
@@ -62,7 +58,12 @@ public class RecipeStepFragment extends Fragment {
         stepAdapter.setItemClickListener(new StepAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                stepSelector.onSelected(position);
+                if (twoPan) {
+                    selectItem(position);
+                    viewPager.setCurrentItem(position, true);
+                } else {
+                    ActivityUtils.getInstance().invokeStepDetailsPage(getActivity(), arrayList, position);
+                }
             }
         });
 
@@ -73,6 +74,8 @@ public class RecipeStepFragment extends Fragment {
 
     private void loadData() {
 
+
+        ArrayList<StepsModel> finalList = new ArrayList<>();
         ArrayList<IngredientsModel> ingredientsModels = null;
         ArrayList<StepsModel> stepsModels = null;
 
@@ -92,20 +95,42 @@ public class RecipeStepFragment extends Fragment {
                 description.append("      " + bullet + "  " + ingredientsModel.getQuantity() + ", " + ingredientsModel.getMeasure() + ", " + ingredientsModel.getIngredient() + "\n");
             }
             StepsModel stepsModel = new StepsModel(placeholder, description.toString());
-            arrayList.add(stepsModel);
+            stepsModel.setSelected(true);
+            finalList.add(stepsModel);
         }
 
-
-        if(stepsModels != null) {
-            arrayList.addAll(stepsModels);
+        if(stepsModels != null && !stepsModels.isEmpty()) {
+            finalList.addAll(stepsModels);
         }
 
-        stepAdapter.notifyDataSetChanged();
+        loadListData(finalList);
+
+        if(twoPan && viewPager != null) {
+            DetailsPagerAdapter detailsPagerAdapter = new DetailsPagerAdapter(getActivity().getSupportFragmentManager(), arrayList);
+            viewPager.setAdapter(detailsPagerAdapter);
+        }
 
     }
 
-    public void setStepSelector(StepSelector stepSelector) {
-        this.stepSelector = stepSelector;
+
+    public void setViewPager(ViewPager viewPager, boolean twoPan) {
+        this.viewPager = viewPager;
+        this.twoPan = twoPan;
+    }
+
+    public void selectItem(int position) {
+        for (StepsModel stepsModel : arrayList) {
+            stepsModel.setSelected(false);
+        }
+        arrayList.get(position).setSelected(true);
+        stepAdapter.notifyDataSetChanged();
+    }
+
+
+    private void loadListData(ArrayList<StepsModel> stepsModels) {
+        arrayList.clear();
+        arrayList.addAll(stepsModels);
+        stepAdapter.notifyDataSetChanged();
     }
 
 }
