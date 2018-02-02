@@ -21,6 +21,8 @@ public class RecipeModel implements Parcelable {
     @SerializedName("steps")
     private ArrayList<StepsModel> steps;
 
+    private boolean isSelected;
+
     public int getId() {
         return id;
     }
@@ -75,4 +77,11 @@ public class RecipeModel implements Parcelable {
         }
     };
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

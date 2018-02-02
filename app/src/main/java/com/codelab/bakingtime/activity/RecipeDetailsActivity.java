@@ -1,21 +1,23 @@
 package com.codelab.bakingtime.activity;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.codelab.bakingtime.R;
-import com.codelab.bakingtime.adapter.DetailsPagerAdapter;
 import com.codelab.bakingtime.api.models.StepsModel;
 import com.codelab.bakingtime.data.constant.Constants;
+import com.codelab.bakingtime.fragment.RecipeDetailsFragment;
 
 import java.util.ArrayList;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
-    private ViewPager mViewPager;
     private ArrayList<StepsModel> stepsModels;
-    private int index;
+    private int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         initData();
         initView();
-        initFunctionality();
+        setFragment(0);
 
     }
 
@@ -41,15 +43,63 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private void initView() {
         setContentView(R.layout.fragment_details_pager);
-        mViewPager = findViewById(R.id.pager);
     }
 
-    private void initFunctionality() {
-        DetailsPagerAdapter detailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager(), stepsModels);
-        mViewPager.setAdapter(detailsPagerAdapter);
-        mViewPager.setCurrentItem(index);
+    private void setFragment(int position) {
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("detailsFragment");
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+
+        Fragment detailsFragment = new RecipeDetailsFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(Constants.KEY_STEPS, stepsModels);
+        args.putInt("index", position);
+        detailsFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().add(R.id.details_fragment, detailsFragment, "detailsFragment").commit();
+
     }
 
+    private int handleFragment(boolean next) {
+        int total = stepsModels.size();
+        if (next) {
+            if (index == total) {
+                return total;
+            } else {
+                index++;
+                return index;
+            }
+        } else {
+            if (index == 0) {
+                return 0;
+            } else {
+                index--;
+                return index;
+            }
+        }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.nav_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.next:
+                setFragment(handleFragment(true));
+                return true;
+            case R.id.previous:
+                setFragment(handleFragment(false));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }

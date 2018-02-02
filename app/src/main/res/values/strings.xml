@@ -11,4 +11,10 @@
 
     <string name="image_description">Image</string>
 
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="set_fav">Set Favorite Widget</string>
+    <string name="no_widget_content">No recipe has been selected. Open app to choose your favourite recipe to show here.</string>
+
 </resources>

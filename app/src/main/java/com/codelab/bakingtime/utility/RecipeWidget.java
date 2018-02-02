@@ -5,30 +5,30 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 import com.codelab.bakingtime.R;
+import com.codelab.bakingtime.activity.FavRecipeActivity;
 import com.codelab.bakingtime.activity.MainActivity;
+import com.codelab.bakingtime.data.preference.AppPreference;
+import com.codelab.bakingtime.data.preference.PrefKey;
 
-/**
- * Implementation of App Widget functionality.
- */
 public class RecipeWidget extends AppWidgetProvider {
+
+    private static Context mContext;
+    private static RemoteViews views;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
-        //
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0);
+        mContext = context;
+        views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, FavRecipeActivity.class), 0);
         views.setOnClickPendingIntent(R.id.widget_button, pendingIntent);
 
+        setValues();
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
-
-
     }
 
     @Override
@@ -47,6 +47,23 @@ public class RecipeWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    static private void setValues() {
+        String title = AppPreference.getInstance(mContext).getString(PrefKey.TITLE);
+        String description = AppPreference.getInstance(mContext).getString(PrefKey.DESCRIPTION);
+
+        if(title != null) {
+            views.setTextViewText(R.id.title, title);
+        } else {
+            views.setTextViewText(R.id.title, "");
+        }
+
+        if(description != null) {
+            views.setTextViewText(R.id.description, description);
+        } else {
+            views.setTextViewText(R.id.description, mContext.getResources().getString(R.string.no_widget_content));
+        }
     }
 }
 

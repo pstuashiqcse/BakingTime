@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codelab.bakingtime.R;
-import com.codelab.bakingtime.adapter.DetailsPagerAdapter;
+import com.codelab.bakingtime.activity.RecipeStepActivity;
 import com.codelab.bakingtime.adapter.StepAdapter;
 import com.codelab.bakingtime.api.models.IngredientsModel;
 import com.codelab.bakingtime.api.models.StepsModel;
@@ -24,11 +24,10 @@ public class RecipeStepFragment extends Fragment {
 
     private ArrayList<StepsModel> arrayList;
     private StepAdapter stepAdapter;
-    private ViewPager viewPager;
-    private boolean twoPan;
 
     private String placeholder;
     private String bullet;
+    private boolean twoPan;
 
     public RecipeStepFragment() {
 
@@ -46,21 +45,20 @@ public class RecipeStepFragment extends Fragment {
         rvSteps.setLayoutManager(layoutManager);
         rvSteps.setAdapter(stepAdapter);
 
-        placeholder = getActivity().getString(R.string.recipe_ingredients);
-        bullet = getActivity().getString(R.string.bullet);
-
-
         stepAdapter.setItemClickListener(new StepAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 if (twoPan) {
                     selectItem(position);
-                    viewPager.setCurrentItem(position, true);
+                    setFragment(position);
                 } else {
                     ActivityUtils.getInstance().invokeStepDetailsPage(getActivity(), arrayList, position);
                 }
             }
         });
+
+        placeholder = getActivity().getString(R.string.recipe_ingredients);
+        bullet = getActivity().getString(R.string.bullet);
 
         loadData();
 
@@ -85,33 +83,30 @@ public class RecipeStepFragment extends Fragment {
         }
 
         StringBuilder description = new StringBuilder();
-        if(ingredientsModels != null) {
+        if (ingredientsModels != null) {
             for (IngredientsModel ingredientsModel : ingredientsModels) {
                 description.append("      " + bullet + "  " + ingredientsModel.getQuantity() + ", " + ingredientsModel.getMeasure() + ", " + ingredientsModel.getIngredient() + "\n");
             }
             StepsModel stepsModel = new StepsModel(placeholder, description.toString());
-            if(twoPan) {
+            if (twoPan) {
                 stepsModel.setSelected(true);
             }
             finalList.add(stepsModel);
         }
 
-        if(stepsModels != null && !stepsModels.isEmpty()) {
+        if (stepsModels != null && !stepsModels.isEmpty()) {
             finalList.addAll(stepsModels);
         }
 
         loadListData(finalList);
 
-        if(twoPan && viewPager != null) {
-            DetailsPagerAdapter detailsPagerAdapter = new DetailsPagerAdapter(getActivity().getSupportFragmentManager(), arrayList);
-            viewPager.setAdapter(detailsPagerAdapter);
+        if(twoPan) {
+            setFragment(0);
         }
-
     }
 
 
-    public void setViewPager(ViewPager viewPager, boolean twoPan) {
-        this.viewPager = viewPager;
+    public void setIsTwoPan(boolean twoPan) {
         this.twoPan = twoPan;
     }
 
@@ -128,6 +123,21 @@ public class RecipeStepFragment extends Fragment {
         arrayList.clear();
         arrayList.addAll(stepsModels);
         stepAdapter.notifyDataSetChanged();
+    }
+
+    public void setFragment(int position) {
+
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("detailsFragment");
+        if (fragment != null) {
+            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+
+        Fragment detailsFragment = new RecipeDetailsFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(Constants.KEY_STEPS, arrayList);
+        args.putInt("index", position);
+        detailsFragment.setArguments(args);
+        getActivity().getSupportFragmentManager().beginTransaction().add(R.id.details_fragment, detailsFragment, "detailsFragment").commit();
     }
 
 }
