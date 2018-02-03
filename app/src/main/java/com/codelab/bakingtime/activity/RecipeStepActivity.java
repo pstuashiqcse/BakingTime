@@ -2,6 +2,7 @@ package com.codelab.bakingtime.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 
 public class RecipeStepActivity extends AppCompatActivity {
 
-    private RecipeStepFragment recipeStepFragment;
     private ArrayList<IngredientsModel> ingredientsModels;
     private ArrayList<StepsModel> stepsModels;
 
@@ -30,7 +30,7 @@ public class RecipeStepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initData();
-        initView();
+        initView(savedInstanceState);
 
     }
 
@@ -46,18 +46,28 @@ public class RecipeStepActivity extends AppCompatActivity {
         }
     }
 
-    private void initView() {
+    private void initView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_recipe_step);
-
-        recipeStepFragment = new RecipeStepFragment();
-        if (findViewById(R.id.details_pane) != null) {
-            // two pane
-            recipeStepFragment.setIsTwoPan(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.KEY_INGREDIENTS, ingredientsModels);
-        bundle.putParcelableArrayList(Constants.KEY_STEPS, stepsModels);
-        recipeStepFragment.setArguments(bundle);
+
+        if (savedInstanceState == null) {
+            RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+            if (findViewById(R.id.details_pane) != null) {
+                // two pane
+                recipeStepFragment.setIsTwoPan(true);
+            }
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(Constants.KEY_INGREDIENTS, ingredientsModels);
+            bundle.putParcelableArrayList(Constants.KEY_STEPS, stepsModels);
+            recipeStepFragment.setArguments(bundle);
+
+            setFragment(recipeStepFragment);
+        }
+    }
+
+    private void setFragment(Fragment recipeStepFragment) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("lisFragment");
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
@@ -66,5 +76,27 @@ public class RecipeStepActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    /*@Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Fragment savedFragment = getSupportFragmentManager().findFragmentByTag("lisFragment");
+        getSupportFragmentManager().putFragment(outState,"myfragment", savedFragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Fragment myFragment = getSupportFragmentManager().getFragment(savedInstanceState,"myfragment");
+        setFragment(myFragment);
+    }*/
 }

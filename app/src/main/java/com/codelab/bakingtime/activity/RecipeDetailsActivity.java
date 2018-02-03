@@ -2,6 +2,7 @@ package com.codelab.bakingtime.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +46,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private void initView() {
         setContentView(R.layout.fragment_details_pager);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void setFragment(int position) {
@@ -118,9 +122,13 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             case R.id.previous:
                 setFragment(handleFragment(false));
                 return true;
+            case android.R.id.home:
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
 }
