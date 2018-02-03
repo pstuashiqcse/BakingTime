@@ -19,6 +19,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private ArrayList<StepsModel> stepsModels;
     private int index = 0;
 
+    private MenuItem nextMenu, previousMenu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,9 +64,20 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private int handleFragment(boolean next) {
-        int total = stepsModels.size();
+
+        if(nextMenu != null) {
+            nextMenu.setVisible(true);
+        }
+        if(previousMenu != null) {
+            previousMenu.setVisible(true);
+        }
+
+        int total = stepsModels.size() - 1;
         if (next) {
             if (index == total) {
+                if(nextMenu != null) {
+                    nextMenu.setVisible(false);
+                }
                 return total;
             } else {
                 index++;
@@ -72,6 +85,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             }
         } else {
             if (index == 0) {
+                if(previousMenu != null) {
+                    previousMenu.setVisible(false);
+                }
                 return 0;
             } else {
                 index--;
@@ -84,6 +100,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.nav_menu, menu);
+
+        nextMenu = menu.findItem(R.id.next);
+        previousMenu = menu.findItem(R.id.previous);
+        previousMenu.setVisible(false);
+
         return true;
     }
 
