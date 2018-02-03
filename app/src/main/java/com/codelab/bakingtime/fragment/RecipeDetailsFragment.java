@@ -35,7 +35,7 @@ public class RecipeDetailsFragment extends Fragment {
     private ImageView thumbView;
 
     private ArrayList<StepsModel> arrayList;
-    private int index;
+    private int index = 0;
 
     public RecipeDetailsFragment() {
 
@@ -65,49 +65,51 @@ public class RecipeDetailsFragment extends Fragment {
 
     private void loadData() {
 
-        String titleText = arrayList.get(index).getShortDescription();
-        String descriptionText = arrayList.get(index).getDescription();
-        String videoUrl = arrayList.get(index).getVideoURL();
-        String thumbUrl = arrayList.get(index).getThumbnailURL();
+        if(arrayList != null && !arrayList.isEmpty()) {
+            String titleText = arrayList.get(index).getShortDescription();
+            String descriptionText = arrayList.get(index).getDescription();
+            String videoUrl = arrayList.get(index).getVideoURL();
+            String thumbUrl = arrayList.get(index).getThumbnailURL();
 
-        if (titleText != null && !titleText.isEmpty()) {
-            title.setText(titleText);
-        } else {
-            title.setVisibility(View.GONE);
-        }
+            if (titleText != null && !titleText.isEmpty()) {
+                title.setText(titleText);
+            } else {
+                title.setVisibility(View.GONE);
+            }
 
-        if (descriptionText != null && !descriptionText.isEmpty()) {
-            description.setText(descriptionText);
-        } else {
-            description.setVisibility(View.GONE);
-        }
+            if (descriptionText != null && !descriptionText.isEmpty()) {
+                description.setText(descriptionText);
+            } else {
+                description.setVisibility(View.GONE);
+            }
 
-        if (videoUrl != null && !videoUrl.isEmpty()) {
-            player = ExoPlayerFactory.newSimpleInstance(
-                    new DefaultRenderersFactory(getActivity()),
-                    new DefaultTrackSelector(), new DefaultLoadControl());
+            if (videoUrl != null && !videoUrl.isEmpty()) {
+                player = ExoPlayerFactory.newSimpleInstance(
+                        new DefaultRenderersFactory(getActivity()),
+                        new DefaultTrackSelector(), new DefaultLoadControl());
 
-            simpleExoPlayerView.setPlayer(player);
+                simpleExoPlayerView.setPlayer(player);
 
-            player.setPlayWhenReady(false);
-            Uri uri = Uri.parse(videoUrl);
-            MediaSource mediaSource = new ExtractorMediaSource.Factory(
-                    new DefaultHttpDataSourceFactory("baking-time")).
-                    createMediaSource(uri);
-            player.prepare(mediaSource, true, false);
+                player.setPlayWhenReady(false);
+                Uri uri = Uri.parse(videoUrl);
+                MediaSource mediaSource = new ExtractorMediaSource.Factory(
+                        new DefaultHttpDataSourceFactory("baking-time")).
+                        createMediaSource(uri);
+                player.prepare(mediaSource, true, false);
 
-            Log.e("Visible", "play");
+                Log.e("Visible", "play");
 
-        } else {
-            simpleExoPlayerView.setVisibility(View.GONE);
-        }
+            } else {
+                simpleExoPlayerView.setVisibility(View.GONE);
+            }
 
-        if (thumbUrl != null && !thumbUrl.isEmpty()) {
-            Glide.with(getActivity())
-                    .load(thumbUrl)
-                    .into(thumbView);
-        } else {
-            thumbView.setVisibility(View.GONE);
+            if (thumbUrl != null && !thumbUrl.isEmpty()) {
+                Glide.with(getActivity())
+                        .load(thumbUrl)
+                        .into(thumbView);
+            } else {
+                thumbView.setVisibility(View.GONE);
+            }
         }
     }
 
