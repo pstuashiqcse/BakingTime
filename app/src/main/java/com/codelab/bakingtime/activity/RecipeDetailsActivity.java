@@ -2,7 +2,6 @@ package com.codelab.bakingtime.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +20,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private int index = 0;
 
     private MenuItem nextMenu, previousMenu;
-
-    private Bundle backupBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private void setFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            setFragment(0);
+            setFragment(index);
         }
     }
 
@@ -113,7 +110,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         nextMenu = menu.findItem(R.id.next);
         previousMenu = menu.findItem(R.id.previous);
-        previousMenu.setVisible(false);
+        if(index == 0) {
+            previousMenu.setVisible(false);
+        }
 
         return true;
     }

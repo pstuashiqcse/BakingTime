@@ -56,9 +56,6 @@ public class RecipeDetailsFragment extends Fragment {
         simpleExoPlayerView = rootView.findViewById(R.id.video_player);
         thumbView = rootView.findViewById(R.id.thumb_view);
 
-
-        setRetainInstance(true);
-
         return rootView;
     }
 

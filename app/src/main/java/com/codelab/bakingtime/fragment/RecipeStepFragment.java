@@ -1,6 +1,7 @@
 package com.codelab.bakingtime.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,9 @@ public class RecipeStepFragment extends Fragment {
     private String bullet;
     private boolean twoPan;
 
+    private int backupPosition = 0;
+    private static final String POSITION_KEY = "position";
+
     public RecipeStepFragment() {
 
     }
@@ -45,10 +49,13 @@ public class RecipeStepFragment extends Fragment {
         rvSteps.setLayoutManager(layoutManager);
         rvSteps.setAdapter(stepAdapter);
 
+        twoPan = ((RecipeStepActivity)getActivity()).isTwoPan();
+
         stepAdapter.setItemClickListener(new StepAdapter.ItemClickListener() {
             @Override
             public void onItemClick(int position) {
                 if (twoPan) {
+                    backupPosition = position;
                     selectItem(position);
                     setFragment(position);
                 } else {
@@ -60,10 +67,10 @@ public class RecipeStepFragment extends Fragment {
         placeholder = getActivity().getString(R.string.recipe_ingredients);
         bullet = getActivity().getString(R.string.bullet);
 
-        loadData();
 
         return rootView;
     }
+
 
     private void loadData() {
 
@@ -100,14 +107,10 @@ public class RecipeStepFragment extends Fragment {
 
         loadListData(finalList);
 
-        if(twoPan) {
-            setFragment(0);
+        if (twoPan) {
+            selectItem(backupPosition);
+            setFragment(backupPosition);
         }
-    }
-
-
-    public void setIsTwoPan(boolean twoPan) {
-        this.twoPan = twoPan;
     }
 
     public void selectItem(int position) {
@@ -140,4 +143,23 @@ public class RecipeStepFragment extends Fragment {
         getActivity().getSupportFragmentManager().beginTransaction().add(R.id.details_fragment, detailsFragment, "detailsFragment").commit();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadData();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(POSITION_KEY, backupPosition);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            backupPosition = savedInstanceState.getInt(POSITION_KEY);
+        }
+    }
 }
