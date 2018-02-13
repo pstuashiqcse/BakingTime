@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BakingTime.iml" filepath="$PROJECT_DIR$/BakingTime.iml" />
-      <module fileurl="file://E:\Ashiq\Nanodegree\Baking Time\BakingTime\BakingTime.iml" filepath="E:\Ashiq\Nanodegree\Baking Time\BakingTime\BakingTime.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:\Ashiq\Nanodegree\Baking Time\BakingTime\app\app.iml" filepath="E:\Ashiq\Nanodegree\Baking Time\BakingTime\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -56,7 +56,6 @@ public class RecipeDetailsFragment extends Fragment {
         simpleExoPlayerView = rootView.findViewById(R.id.video_player);
         thumbView = rootView.findViewById(R.id.thumb_view);
 
-        loadData();
 
         setRetainInstance(true);
 
@@ -118,6 +117,12 @@ public class RecipeDetailsFragment extends Fragment {
             player.release();
             player = null;
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadData();
     }
 
     @Override
