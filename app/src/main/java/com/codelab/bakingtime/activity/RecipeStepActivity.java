@@ -85,18 +85,4 @@ public class RecipeStepActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*@Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Fragment savedFragment = getSupportFragmentManager().findFragmentByTag("lisFragment");
-        getSupportFragmentManager().putFragment(outState,"myfragment", savedFragment);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Fragment myFragment = getSupportFragmentManager().getFragment(savedInstanceState,"myfragment");
-        setFragment(myFragment);
-    }*/
 }

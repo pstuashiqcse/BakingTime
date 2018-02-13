@@ -22,13 +22,15 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private MenuItem nextMenu, previousMenu;
 
+    private Bundle backupBundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initData();
         initView();
-        setFragment(0);
+        setFragment(savedInstanceState);
 
     }
 
@@ -46,13 +48,18 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     private void initView() {
         setContentView(R.layout.fragment_details_pager);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    private void setFragment(int position) {
+    private void setFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            setFragment(0);
+        }
+    }
 
+    private void setFragment(int position) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("detailsFragment");
         if (fragment != null) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
@@ -64,22 +71,21 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         args.putInt("index", position);
         detailsFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().add(R.id.details_fragment, detailsFragment, "detailsFragment").commit();
-
     }
 
     private int handleFragment(boolean next) {
 
-        if(nextMenu != null) {
+        if (nextMenu != null) {
             nextMenu.setVisible(true);
         }
-        if(previousMenu != null) {
+        if (previousMenu != null) {
             previousMenu.setVisible(true);
         }
 
         int total = stepsModels.size() - 1;
         if (next) {
             if (index == total) {
-                if(nextMenu != null) {
+                if (nextMenu != null) {
                     nextMenu.setVisible(false);
                 }
                 return total;
@@ -89,7 +95,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             }
         } else {
             if (index == 0) {
-                if(previousMenu != null) {
+                if (previousMenu != null) {
                     previousMenu.setVisible(false);
                 }
                 return 0;
