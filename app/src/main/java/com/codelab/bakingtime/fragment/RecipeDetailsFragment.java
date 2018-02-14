@@ -2,6 +2,7 @@ package com.codelab.bakingtime.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,8 @@ public class RecipeDetailsFragment extends Fragment {
 
     private ArrayList<StepsModel> arrayList;
     private int index = 0;
+    private long position = 0;
+    private static final String POSITION_KEY = "position";
 
     public RecipeDetailsFragment() {
 
@@ -93,6 +96,11 @@ public class RecipeDetailsFragment extends Fragment {
                         createMediaSource(uri);
                 player.prepare(mediaSource, true, false);
 
+                if(position != 0) {
+                    player.setPlayWhenReady(true);
+                    player.seekTo(position);
+                }
+
                 Log.e("Visible", "play");
 
             } else {
@@ -111,6 +119,8 @@ public class RecipeDetailsFragment extends Fragment {
 
     private void releasePlayer() {
         if (player != null) {
+            position = player.getCurrentPosition();
+            player.stop();
             player.release();
             player = null;
         }
@@ -126,5 +136,22 @@ public class RecipeDetailsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         releasePlayer();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(player != null) {
+            position = player.getCurrentPosition();
+        }
+        outState.putLong(POSITION_KEY, position);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            position = savedInstanceState.getLong(POSITION_KEY);
+        }
     }
 }

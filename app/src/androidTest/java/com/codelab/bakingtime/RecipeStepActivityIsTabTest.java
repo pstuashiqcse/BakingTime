@@ -25,7 +25,7 @@ public class RecipeStepActivityIsTabTest {
 
     @Test
     public void checkTab() {
-        Espresso.onView(ViewMatchers.withId(R.id.details_pane))        // withId(R.id.my_view) is a ViewMatcher
+        Espresso.onView(ViewMatchers.withId(R.id.details_pane))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
 
         /**

@@ -26,10 +26,7 @@ public class RecipeStepFragment extends Fragment {
     private ArrayList<StepsModel> arrayList;
     private StepAdapter stepAdapter;
 
-    private String placeholder;
-    private String bullet;
     private boolean twoPan;
-
     private int backupPosition = 0;
     private static final String POSITION_KEY = "position";
 
@@ -57,15 +54,12 @@ public class RecipeStepFragment extends Fragment {
                 if (twoPan) {
                     backupPosition = position;
                     selectItem(position);
-                    setFragment(position);
+                    ((RecipeStepActivity)getActivity()).setDetailsFragment(position);
                 } else {
                     ActivityUtils.getInstance().invokeStepDetailsPage(getActivity(), arrayList, position);
                 }
             }
         });
-
-        placeholder = getActivity().getString(R.string.recipe_ingredients);
-        bullet = getActivity().getString(R.string.bullet);
 
 
         return rootView;
@@ -74,42 +68,18 @@ public class RecipeStepFragment extends Fragment {
 
     private void loadData() {
 
-
-        ArrayList<StepsModel> finalList = new ArrayList<>();
-        ArrayList<IngredientsModel> ingredientsModels = null;
         ArrayList<StepsModel> stepsModels = null;
-
-        Bundle bundle = getActivity().getIntent().getExtras();
-
-        if (bundle != null && bundle.containsKey(Constants.KEY_INGREDIENTS)) {
-            ingredientsModels = bundle.getParcelableArrayList(Constants.KEY_INGREDIENTS);
-        }
-
+        Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey(Constants.KEY_STEPS)) {
             stepsModels = bundle.getParcelableArrayList(Constants.KEY_STEPS);
         }
 
-        StringBuilder description = new StringBuilder();
-        if (ingredientsModels != null) {
-            for (IngredientsModel ingredientsModel : ingredientsModels) {
-                description.append("      " + bullet + "  " + ingredientsModel.getQuantity() + ", " + ingredientsModel.getMeasure() + ", " + ingredientsModel.getIngredient() + "\n");
-            }
-            StepsModel stepsModel = new StepsModel(placeholder, description.toString());
-            if (twoPan) {
-                stepsModel.setSelected(true);
-            }
-            finalList.add(stepsModel);
-        }
-
-        if (stepsModels != null && !stepsModels.isEmpty()) {
-            finalList.addAll(stepsModels);
-        }
-
-        loadListData(finalList);
+        arrayList.clear();
+        arrayList.addAll(stepsModels);
+        stepAdapter.notifyDataSetChanged();
 
         if (twoPan) {
             selectItem(backupPosition);
-            setFragment(backupPosition);
         }
     }
 
@@ -117,30 +87,10 @@ public class RecipeStepFragment extends Fragment {
         for (StepsModel stepsModel : arrayList) {
             stepsModel.setSelected(false);
         }
-        arrayList.get(position).setSelected(true);
-        stepAdapter.notifyDataSetChanged();
-    }
-
-
-    private void loadListData(ArrayList<StepsModel> stepsModels) {
-        arrayList.clear();
-        arrayList.addAll(stepsModels);
-        stepAdapter.notifyDataSetChanged();
-    }
-
-    public void setFragment(int position) {
-
-        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("detailsFragment");
-        if (fragment != null) {
-            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        if(arrayList != null && !arrayList.isEmpty()) {
+            arrayList.get(position).setSelected(true);
+            stepAdapter.notifyDataSetChanged();
         }
-
-        Fragment detailsFragment = new RecipeDetailsFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(Constants.KEY_STEPS, arrayList);
-        args.putInt("index", position);
-        detailsFragment.setArguments(args);
-        getActivity().getSupportFragmentManager().beginTransaction().add(R.id.details_fragment, detailsFragment, "detailsFragment").commit();
     }
 
     @Override
