@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,12 @@ public class RecipeDetailsFragment extends Fragment {
 
     private ArrayList<StepsModel> arrayList;
     private int index = 0;
+
     private long position = 0;
     private static final String POSITION_KEY = "position";
+
+    private boolean shouldAutoPlay;
+    private static final String AUTO_PLAY = "auto_play";
 
     public RecipeDetailsFragment() {
 
@@ -59,12 +64,14 @@ public class RecipeDetailsFragment extends Fragment {
         simpleExoPlayerView = rootView.findViewById(R.id.video_player);
         thumbView = rootView.findViewById(R.id.thumb_view);
 
+        restoreBundleData(savedInstanceState);
+
         return rootView;
     }
 
     private void loadData() {
 
-        if(arrayList != null && !arrayList.isEmpty()) {
+        if (arrayList != null && !arrayList.isEmpty()) {
             String titleText = arrayList.get(index).getShortDescription();
             String descriptionText = arrayList.get(index).getDescription();
             String videoUrl = arrayList.get(index).getVideoURL();
@@ -96,8 +103,8 @@ public class RecipeDetailsFragment extends Fragment {
                         createMediaSource(uri);
                 player.prepare(mediaSource, true, false);
 
-                if(position != 0) {
-                    player.setPlayWhenReady(true);
+                if (position > 0 || shouldAutoPlay) {
+                    player.setPlayWhenReady(shouldAutoPlay);
                     player.seekTo(position);
                 }
 
@@ -118,8 +125,8 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     private void releasePlayer() {
+        saveBundleData();
         if (player != null) {
-            position = player.getCurrentPosition();
             player.stop();
             player.release();
             player = null;
@@ -129,29 +136,62 @@ public class RecipeDetailsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        loadData();
+        if (Util.SDK_INT > 23) {
+            loadData();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if ((Util.SDK_INT <= 23 || player == null)) {
+            loadData();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        releasePlayer();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(player != null) {
-            position = player.getCurrentPosition();
-        }
+        saveBundleData();
         outState.putLong(POSITION_KEY, position);
+        outState.putBoolean(AUTO_PLAY, shouldAutoPlay);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState != null) {
+        restoreBundleData(savedInstanceState);
+    }
+
+    private void saveBundleData() {
+        if(player != null) {
+            shouldAutoPlay = player.getPlayWhenReady();
+            position = player.getCurrentPosition();
+        }
+    }
+
+    private void restoreBundleData(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
             position = savedInstanceState.getLong(POSITION_KEY);
+            shouldAutoPlay = savedInstanceState.getBoolean(AUTO_PLAY);
+
         }
     }
 }
